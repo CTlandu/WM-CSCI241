@@ -4,7 +4,12 @@ from Stack import Stack
 def Hanoi_rec(n, s, a, d):
   print(n, s, a, d)
   # TODO replace pass with your base and recursive cases.
-  pass
+  if n == 0:
+    d.push(s.pop())
+  else:
+    Hanoi_rec(n-1, s, d, a)
+    d.push(s.pop())
+    Hanoi_rec(n-1, a, s, d)
   print(n, s, a, d)
   print()
 
