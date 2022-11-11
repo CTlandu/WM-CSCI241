@@ -24,6 +24,6 @@ def Hanoi(n):
   Hanoi_rec(n-1, source, aux, dest)
 
 if __name__ == "__main__":
-  n=3
+  n=12
   runtime = timeit.timeit("Hanoi(n)", setup="from __main__ import Hanoi,n", number=1)
   print("computed Hanoi(" + str(n) + ") in " + str(runtime) + " seconds.")

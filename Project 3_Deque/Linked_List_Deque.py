@@ -33,11 +33,15 @@ class Linked_List_Deque(Deque):
   def pop_front(self):
     # TODO replace pass with your implementation.
     # Use the head position for the front.
+    if len(self) == 0:
+      return None
     return self.__list.remove_element_at(0)
 
   def peek_front(self):
     # TODO replace pass with your implementation.
     # Use the head position for the front.
+    if len(self) == 0:
+      return None
     return self.__list.get_element_at(0)
 
   def push_back(self, val):
@@ -48,30 +52,34 @@ class Linked_List_Deque(Deque):
   def pop_back(self):
     # TODO replace pass with your implementation.
     # Use the tail position for the back.
+    if(len(self) == 0):
+      return None
     return self.__list.remove_element_at(len(self.__list)-1)
 
   def peek_back(self):
     # TODO replace pass with your implementation.
     # Use the tail position for the back.
+    if(len(self)) == 0:
+      return None
     return self.__list.get_element_at(len(self.__list)-1)
 
 # Unit tests make the main section unneccessary.
 if __name__ == '__main__':
-#  pass
-  def rec(D):
-      if len(D) == 0:
-        return D
-      if len(D) == 1:
-        return D
-      else:
-        val = D.pop_back()
-        rec(D).push_front(val)
-        return D
+  pass
+#   def rec(D):
+#       if len(D) == 0:
+#         return D
+#       if len(D) == 1:
+#         return D
+#       else:
+#         val = D.pop_back()
+#         rec(D).push_front(val)
+#         return D
     
-  dq=Linked_List_Deque()
-  dq.push_back('A')
-  dq.push_back('B')
-  dq.push_back('C')
-  dq.push_back('D')
-  dq.push_back('E')
-  print(rec(dq))
+#   dq=Linked_List_Deque()
+#   dq.push_back('A')
+#   dq.push_back('B')
+#   dq.push_back('C')
+#   dq.push_back('D')
+#   dq.push_back('E')
+#   print(rec(dq))

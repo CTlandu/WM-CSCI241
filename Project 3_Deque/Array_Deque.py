@@ -77,7 +77,7 @@ class Array_Deque(Deque):
   def pop_front(self):
     # TODO replace pass with your implementation. Do not reduce the capacity.
     if self.size == 0:
-      raise IndexError
+      return None
     else:
       temp = self.__contents[self.front]
       self.front = (self.front+1)%self.__capacity
@@ -100,7 +100,7 @@ class Array_Deque(Deque):
   def pop_back(self):
     # TODO replace pass with your implementation. Do not reduce the capacity.
     if self.size == 0:
-      raise IndexError
+      return None
     else:
       temp = self.__contents[self.back]
       self.back = (self.back+self.__capacity-1)%self.__capacity
@@ -111,24 +111,24 @@ class Array_Deque(Deque):
     # TODO replace pass with your implementation.
     return self.__contents[self.back]
       
-def rec(D):
-  if len(D) == 0:
-    return D
-  if len(D) == 1:
-    return D
-  else:
-    val = D.pop_back()
-    rec(D).push_front(val)
-    return D
+# def rec(D):
+#   if len(D) == 0:
+#     return D
+#   if len(D) == 1:
+#     return D
+#   else:
+#     val = D.pop_back()
+#     rec(D).push_front(val)
+#     return D
 # No main section is necessary. Unit tests take its place.
 if __name__ == '__main__':
-#  pass    
-  dq=Array_Deque()
-  dq.push_back('A')
-  dq.push_back('B')
-  dq.push_back('C')
-  dq.push_back('D')
-  dq.push_back('E')
-  print(dq)
-  print(rec(dq))
+  pass    
+  # dq=Array_Deque()
+  # dq.push_back('A')
+  # dq.push_back('B')
+  # dq.push_back('C')
+  # dq.push_back('D')
+  # dq.push_back('E')
+  # print(dq)
+  # print(rec(dq))
 
