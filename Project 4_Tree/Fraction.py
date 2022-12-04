@@ -55,7 +55,10 @@ class Fraction:
     #False otherwise. Recall that floating-point
     #representation is imprecise. Use cross-
     #multiplication to remain in the integer domain.
-    pass
+    if self.__n * other.__d < self.__d * other.__n:
+      return True
+    else:
+      return False
 
   def __gt__(self, other):
     #TODO replace pass with your implementation,
@@ -63,7 +66,10 @@ class Fraction:
     #False otherwise. Recall that floating-point
     #representation is imprecise. Use cross-
     #multiplication to remain in the integer domain.
-    pass
+    if self.__n * other.__d > self.__d * other.__n:
+      return True
+    else:
+      return False
 
   def __eq__(self, other):
     #TODO replace pass with your implementation,
@@ -72,7 +78,10 @@ class Fraction:
     #stored in reduced form. Recall that floating-point
     #representation is imprecise. Use cross-
     #multiplication to remain in the integer domain.
-    pass
+    if self.__n * other.__d == self.__d * other.__n:
+      return True
+    else:
+      return False
 
   def to_float(self):
     #this is safe because we don't allow a
@@ -88,6 +97,8 @@ class Fraction:
   def __repr__(self):
     return str(self)
 
+import Binary_Search_Tree
+import random
 if __name__ == '__main__':
   #TODO create a bunch of fraction objects and store them in an array.
   #Then insert each item from the array into a balanced BST.
@@ -95,4 +106,16 @@ if __name__ == '__main__':
   #the new to_list() method, which you must implement.
   #print the original and in-order traversal arrays to show that
   #the fractions have been sorted.
-  pass
+  n = []
+  for i in range(10):
+    a = Fraction(random.randint(1,100), random.randint(1,100))
+    n.append(a)
+  
+  print(n)
+  tree = Binary_Search_Tree.Binary_Search_Tree()
+  for i in n:
+    tree.insert_element(i)
+    
+  print(tree.to_list())
+
+  

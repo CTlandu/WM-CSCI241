@@ -16,8 +16,10 @@ class Binary_Search_Tree:
       self.parent = None
       self.__height = 1 
 
+
     def getheight(self):
       return self.__height
+    
     
     def setheight(self):
       left = right = 0
@@ -34,86 +36,6 @@ class Binary_Search_Tree:
         self.__height = right + 1
       else:
         self.__height = left + 1
-    
-      # for the case that root -2, root.leftchild +1
-    def small_rotate_left(self):
-      rightchild = self.rightchild
-      print("rightchild is " + str(rightchild.value))
-      if self.parent.leftchild == self:
-        isLeft = True
-      else:
-        isLeft = False
-      if rightchild.get_balance() == 0:
-        if isLeft:
-          self.parent.leftchild = rightchild
-        else:
-          self.parent.rightchild = rightchild
-        rightchild.parent = self.parent
-        self.parent = rightchild
-        self.rightchild = rightchild.leftchild
-        rightchild.leftchild = self
-        
-        self.setheight()
-        rightchild.setheight()
-        
-      elif rightchild.get_balance() == -1:
-        rightchild.leftchild.parent = self
-        self.rightchild = rightchild.leftchild
-        rightchild.parent = self.rightchild
-        rightchild.leftchild = None
-        self.rightchild.rightchild = rightchild
-
-        self.rightchild.rightchild.setheight()
-        self.rightchild.setheight()
-        
-        self.small_rotate_left()
-      else: #rightchild.get_balance() == +1
-        if isLeft:
-          self.parent.leftchild = rightchild
-        else:
-          self.parent.rightchild = rightchild
-        rightchild.parent = self.parent
-        self.parent = rightchild
-        rightchild.leftchild = self
-        self.rightchild = None
-        
-        self.setheight()
-        rightchild.setheight()
-        rightchild.parent.setheight()
-        
-        
-      
-      # parent = self.parent
-      # parent.leftchild = temp #relink the parent to the new node
-      # temp.parent = parent
-      # temp.leftchild = self
-      # self.parent = temp
-      # self.rightchild = None
-    
-    def rotate_right(self):
-      #print("self"+ str(self.value))
-      child = self.leftchild
-      #print(child.value)
-      temp = child.rightchild
-      #print(temp.value)
-      child.rightchild = self
-      child.parent = self.parent
-      #print(self.value)
-  
-      if self.parent.leftchild == self:
-        self.parent.leftchild = child
-      else:
-        self.parent.rightchild = child
-      
-      self.parent = child
-      self.leftchild = temp
-      if temp is not None:
-        temp.parent = self
-      self.setheight()
-      child.setheight()
-      print("----------")
-      print(self.value)
-      print(child.value)
 
     
     def get_balance(self):
@@ -128,6 +50,45 @@ class Binary_Search_Tree:
       balance = rightheight - leftheight
       return balance
     
+    
+    def rotate_right(self):
+      parent = self.parent
+      temp = self.leftchild
+      temp.parent = parent
+      if parent.leftchild == self:
+        parent.leftchild = temp
+      else:
+        parent.rightchild = temp
+      
+      righttemp = temp.rightchild
+      if righttemp is not None:
+        righttemp.parent = self
+      temp.rightchild = self
+      self.parent = temp
+      self.leftchild = righttemp
+      self.setheight()
+      temp.setheight()
+
+
+    def rotate_left(self):
+      parent = self.parent
+      temp = self.rightchild
+      temp.parent = parent
+      if parent.leftchild == self:
+        parent.leftchild = temp
+      else:
+        parent.rightchild = temp
+      
+      lefttemp = temp.leftchild
+      if lefttemp is not None:
+        lefttemp.parent = self
+      temp.leftchild = self
+      self.parent = temp
+      self.rightchild = lefttemp
+      self.setheight()
+      temp.setheight()
+      
+        
   def __init__(self):
     self.__root = self.__BST_Node(None)
     # TODO complete initialization
@@ -138,37 +99,51 @@ class Binary_Search_Tree:
   def __set_height_of_root(self, val):
     self.height = val
     
+    
   def set_root(self,value):
     self.__root.leftchild = self.__BST_Node(value)
     self.__root.rightchild = self.__root.leftchild
     self.__root.leftchild.parent = self.__root
     
+    
   def get_root(self):
     return self.__root.leftchild
-    
+  
+  
   def __balance(t):
     balance = t.get_balance()
     if abs(balance) < 2:
       return t
     else:
-      # t.balance = -2
+      # t is left heavy by 2:
       if balance == -2:
         child = t.leftchild
-        # child -2, -1 or 0
+        # t's leftchild is left-heavy by 1 or 0
         if(child.get_balance() <= 0): 
           t.rotate_right()
-        # child +1 or +2
+          
+          """"
+          Because t is rotate, we need to return its parent as the new root for the remove method
+          in order to get t's orginal parent link to the correct node.
+          """
+          return t.parent
+        # t's leftchild is right-heavy by 1
         else:
-          t.leftchild.small_rotate_left()
-          t.rotate_right() 
+          t.leftchild.rotate_left()
+          t.rotate_right()
+          return t.parent
       # t.balance = 2    
       elif balance == 2:
         child = t.rightchild
-        if(child.get_balance() == 1):
-          pass
-      
-      return t  
-    
+        if(child.get_balance() >= 0):
+          t.rotate_left()
+          return t.parent
+        else:
+          t.rightchild.rotate_right()
+          t.rotate_left()
+          return t.parent
+
+
   def __recursive_insert(self,value,root):
     if (value == root.value):
       raise ValueError
@@ -177,28 +152,27 @@ class Binary_Search_Tree:
         root.leftchild = self.__BST_Node(value)
         root.leftchild.parent = root
         root.setheight()
-        root = Binary_Search_Tree.__balance(root)
+        Binary_Search_Tree.__balance(root)
         root.setheight()
 
       elif(value < root.value and root.leftchild is not None):
         self.__recursive_insert(value,root.leftchild)
         root.setheight()
-        root = Binary_Search_Tree.__balance(root)
+        Binary_Search_Tree.__balance(root)
         root.setheight()
 
       elif(value > root.value and root.rightchild is None):
         root.rightchild = self.__BST_Node(value)
         root.rightchild.parent = root
         root.setheight()
-        root = Binary_Search_Tree.__balance(root)
+        Binary_Search_Tree.__balance(root)
         root.setheight()
 
       else:
         self.__recursive_insert(value,root.rightchild)
         root.setheight()
-        root = Binary_Search_Tree.__balance(root)
+        Binary_Search_Tree.__balance(root)
         root.setheight()
-
 
   
   def insert_element(self, value):
@@ -219,18 +193,26 @@ class Binary_Search_Tree:
 
   
   def __recursive_remove(self, root, val):
+    # Doesn't find the value we want
     if root is None:
       raise ValueError
+    
+    # intended value < current.value, go left
     if val < root.value:
       root.leftchild = self.__recursive_remove(root.leftchild, val)
+      root.setheight()
       if root.leftchild is not None:
         root.leftchild.parent = root
-      root.setheight()
+
+    # intended value > current.value, go right
     elif val > root.value:
       root.rightchild = self.__recursive_remove(root.rightchild,val)
+
+      root.setheight()
       if root.rightchild is not None:
         root.rightchild.parent = root
-      root.setheight()
+    
+    # find the value we want to remove, check how to remove it.
     else:
       if root.rightchild is None:
         return root.leftchild
@@ -243,11 +225,14 @@ class Binary_Search_Tree:
           temp = temp.leftchild
         temp_val = temp.value
         
+        # swap current value with the value we need to replace, and then remove the value from current.rightchild
         root.value = temp_val
         root.rightchild = self.__recursive_remove(root.rightchild, temp_val)
         root.setheight()
       
-    return root
+    root.setheight()
+    return Binary_Search_Tree.__balance(root)
+
     
   def remove_element(self, value):
     # Remove the value specified from the tree, raising a ValueError
@@ -266,6 +251,8 @@ class Binary_Search_Tree:
     else:
       self.__set_height_of_root(self.get_root().getheight())
   
+  
+  # private method for in_order()
   def inorderstring(self, root, list):
     if root:
       self.inorderstring(root.leftchild, list)
@@ -295,6 +282,8 @@ class Binary_Search_Tree:
       string += a[len(a)-1] + " ]"
       return string
 
+
+  # private method for pre_order()
   def __pre_trav(self, root, list):
     if root:
       list.append(str(root.value))
@@ -325,11 +314,13 @@ class Binary_Search_Tree:
       return string
 
 
+  # private mathod for post_order()
   def __post_trev(self, root, list):
     if root:
       self.__post_trev(root.leftchild, list)
       self.__post_trev(root.rightchild, list)
       list.append(str(root.value))
+    
     
   def post_order(self):
     # Construct an return a string representing the post-order
@@ -351,6 +342,7 @@ class Binary_Search_Tree:
       string += a[len(a)-1] + " ]"
       return string
 
+
   def get_height(self):
     # return an integer that represents the height of the tree.
     # assume that an empty tree has height 0 and a tree with one
@@ -360,9 +352,22 @@ class Binary_Search_Tree:
 
     
   def __str__(self):
-    #return self.in_order()
+    return self.in_order()
     #return self.pre_order()
-    return self.post_order()
+    #return self.post_order()
 
+  def inorder_tolist(self, root, list):
+    if root:
+      self.inorder_tolist(root.leftchild, list)
+      
+      list.append(root.value)
+
+      self.inorder_tolist(root.rightchild, list)
+  
+  def to_list(self):
+    list = []
+    self.inorder_tolist(self.get_root(), list)
+    return list
+   
 if __name__ == '__main__':
   pass #unit tests make the main section unnecessary.
